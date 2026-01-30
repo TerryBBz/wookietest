@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout (~{::title}, ~{::content})}">
+
+<head>
+  <title>Liste des missions</title>
+</head>
+
+<body>
+
+  <th:block th:fragment="content">
+    <h1>Liste des missions</h1>
+
+    <div class="add-button">
+      <a th:href="@{/mission/add}">Ajouter une mission</a>
+    </div>
+
+    <!-- Filtres par statut -->
+    <div class="filter-container">
+        <label class="filter-label">Filtrer par statut :</label>
+
+        <form method="get" th:action="@{/mission}" th:object="${filter}">
+
+            <label>
+                <input type="radio" name="status" value="" th:checked="${filter.status == null}" onchange="this.form.submit()">
+                Toutes les missions
+            </label>
+
+            <label>
+                <input type="radio" th:field="*{status}" value="IN_PROGRESS" onchange="this.form.submit()">
+                En cours
+            </label>
+
+            <label>
+                <input type="radio" th:field="*{status}" value="DONE" onchange="this.form.submit()">
+                Terminée
+            </label>
+
+        </form>
+    </div>
+    <!-- Tableau des missions -->
+    <table>
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Nombre d'équipages</th>
+          <th>Statut mission</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="mission : ${missionPage.content}">
+          <td th:text="${mission.name != null ? mission.name : 'Inconnue'}"></td>
+          <td th:text="${mission.flyingCrewList != null ? #lists.size(mission.flyingCrewList) : 0}"></td>
+          <td th:text="${mission.status != null ? mission.status : 'Inconnu'}"></td>
+          <td>
+            <a th:href="@{/mission/{id}/info(id=${mission.id})}">Voir</a>
+            <span th:if="${mission.status.name() == 'IN_PROGRESS'}"> | <a th:href="@{/mission/{id}/finish(id=${mission.id})}">Terminer mission</a></span>
+            <span th:if="${mission.status.name() == 'DONE'}"> | Mission terminée</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination" th:if="${missionPage.totalPages > 1}">
+      <span th:if="${missionPage.hasPrevious()}">
+        <a th:href="@{/mission(page=${missionPage.number - 1},
+                             size=${missionPage.size},
+                             status=${filter.status?.name()})}">
+          « Précédent
+        </a>
+      </span>
+
+      <span th:each="i : ${#numbers.sequence(0, missionPage.totalPages - 1)}">
+        <a th:if="${i != missionPage.number}"
+           th:href="@{/mission(page=${i},
+                             size=${missionPage.size},
+                             status=${filter.status?.name()})}"
+           th:text="${i + 1}"></a>
+        <strong th:if="${i == missionPage.number}" th:text="${i + 1}"></strong>
+      </span>
+
+      <span th:if="${missionPage.hasNext()}">
+        <a th:href="@{/mission(page=${missionPage.number + 1},
+                             size=${missionPage.size},
+                             status=${filter.status?.name()})}">
+          Suivant »
+        </a>
+      </span>
+    </div>
+  </th:block>
+
+</body>
+
+</html>

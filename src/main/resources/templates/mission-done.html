@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Terminer la mission</title>
+</head>
+<body>
+    <h1>Terminer la mission : <span th:text="${mission.name}"></span></h1>
+
+    <form th:action="@{/mission/{id}/finish(id=${mission.id})}" method="post">
+        <table>
+            <tr>
+                <td><label for="flightTime">Temps de vol (minutes) :</label></td>
+                <td><input type="number" id="flightTime" name="flightTime" required /></td>
+            </tr>
+            <tr>
+                <td><label for="successRate">Taux de succès (%) :</label></td>
+                <td><input type="number" id="successRate" name="successRate" min="0" max="100" step="0.1" required /></td>
+            </tr>
+        </table>
+
+        <h3>Statuts individuels après mission :</h3>
+
+        <div th:each="crew, crewStat : ${mission.flyingCrewList}" class="crew-card">
+            <h3 th:text="'Équipage : ' + ${crew.crewName}"></h3>
+
+            <!-- Statut du Fighter -->
+            <div class="fighter-info">
+                <h4>🚀 Vaisseau</h4>
+                <table class="details-table">
+                    <tr>
+                        <th>Nom du chasseur :</th>
+                        <td th:text="${crew.fighter.name}"></td>
+                    </tr>
+                    <tr>
+                        <th>Type :</th>
+                        <td th:text="${crew.fighter.type.name}"></td>
+                    </tr>
+                    <tr>
+                        <th>Statut après mission :</th>
+                        <td>
+                            <select th:id="'fighterStatus_' + ${crew.id}" th:name="'fighterStatus_' + ${crew.id}" required>
+                                <option value="OPERATIONAL">Opérationnel</option>
+                                <option value="MAINTENANCE">En maintenance</option>
+                                <option value="MAINTENANCE_BUT_OPERATIONAL">Maintenance mais opérationnel</option>
+                                <option value="DESTROYED">Détruit</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Statut des Pilotes -->
+            <div class="pilots-info">
+                <h4>👨‍🚀 Pilotes</h4>
+                <table class="pilots-table">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            <th>Race</th>
+                            <th>Statut après mission</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="assignedPilot, pilotStat : ${crew.assignedPilotList}">
+                            <td th:text="${assignedPilot.pilot.lastName}"></td>
+                            <td th:text="${assignedPilot.pilot.firstName}"></td>
+                            <td th:text="${assignedPilot.pilot.race.name}"></td>
+                            <td>
+                                <select th:id="'pilotStatus_' + ${assignedPilot.id}" th:name="'pilotStatus_' + ${assignedPilot.id}" required>
+                                    <option value="AVAILABLE">Disponible</option>
+                                    <option value="WOUNDED">Blessé</option>
+                                    <option value="WOUNDED_BUT_AVAILABLE">Blessé mais disponible</option>
+                                    <option value="DEAD">Mort</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div>
+            <input type="submit" value="Terminer la mission" />
+            <a href="/mission">Annuler</a>
+        </div>
+    </form>
+
+    <h3>Détails de la mission :</h3>
+    <ul>
+        <li><strong>Type :</strong> <span th:text="${mission.type != null ? mission.type.name : 'N/A'}"></span></li>
+        <li><strong>Description :</strong> <span th:text="${mission.description}"></span></li>
+        <li><strong>Équipages participants :</strong>
+            <ul>
+                <li th:each="crew : ${mission.flyingCrewList}">
+                    <strong>Équipage ID:</strong> <span th:text="${crew.id}"></span> -
+                    <strong>Chasseur:</strong> <span th:text="${crew.fighter.name}"></span>
+                    (<span th:text="${crew.fighter.type.name}"></span>)
+                    <ul>
+                        <li th:each="assignedPilot : ${crew.assignedPilotList}">
+                            <strong>Pilote:</strong>
+                            <span th:text="${assignedPilot.pilot.firstName + ' ' + assignedPilot.pilot.lastName}"></span>
+                            (<span th:text="${assignedPilot.pilot.race.name}"></span>)
+                            <span th:if="${assignedPilot.pilotStatusAfterMission != null}">
+                                - <strong>Statut après mission:</strong> <span th:text="${assignedPilot.pilotStatusAfterMission}"></span>
+                            </span>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</body>
+</html>

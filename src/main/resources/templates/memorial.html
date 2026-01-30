@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout :: layout (~{::title}, ~{::content})}"
+>
+
+<head>
+  <title>Memorial</title>
+</head>
+
+<body>
+  <th:block th:fragment="content">
+
+    <h1>Memorial des pilotes tombés</h1>
+
+    <p class="memorial-intro">
+      À travers les étoiles, leurs vaisseaux se sont tus, mais leurs noms résonnent encore
+      dans chaque hangar, chaque briefing, chaque vol.
+      Voici les pilotes qui ont donné leur vie pour la liberté de la galaxie.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th>Race</th>
+          <th>Âge</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="pilot : ${pilots}">
+          <td th:text="${pilot.lastName}">Skywalker</td>
+          <td th:text="${pilot.firstName}">Luke</td>
+          <td th:text="${pilot.race != null ? pilot.race.name : 'Inconnue'}">Humain</td>
+          <td th:text="${pilot.subscriptionAge}">24</td>
+          <td th:text="${pilotGrades[pilot.idPilot]}">Capitaine</td>
+        </tr>
+
+        <!-- Message si aucun pilote mort -->
+        <tr th:if="${#lists.isEmpty(pilots)}">
+          <td
+            colspan="5"
+            class="empty-memorial"
+          >
+            Aucun pilote tombé au combat n’est enregistré pour le moment.
+            Que la Force continue de veiller sur nos escadrons.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </th:block>
+</body>
+
+</html>

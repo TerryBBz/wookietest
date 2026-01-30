@@ -1,0 +1,151 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 2rem;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+h1 {
+    color: #2c3e50;
+}
+
+form {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+input[type="text"],
+select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+select[multiple] {
+    height: 8rem;
+}
+
+button {
+    padding: 0.5rem 1.5rem;
+    background-color: #3498db;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+th,
+td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f0f0f0;
+}
+
+a {
+    display: inline-block;
+    margin-bottom: 1rem;
+    text-decoration: none;
+    color: #3498db;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+nav span {
+    font-weight: bold;
+    color: #555;
+}
+
+/* Styles pour la page de détail des missions */
+.mission-details {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.crew-card {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #3498db;
+}
+
+.details-table {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.details-table th {
+    width: 200px;
+    background-color: #f8f9fa;
+    font-weight: bold;
+    vertical-align: top;
+}
+
+.fighter-info, .pilots-info {
+    margin-bottom: 1.5rem;
+}
+
+.pilots-table {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.pilots-table th {
+    background-color: #e9ecef;
+    font-size: 0.9rem;
+}
+
+.pilots-table td {
+    font-size: 0.9rem;
+}
+
+.crews-details h2 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.crew-card h3 {
+    color: #3498db;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 0.5rem;
+}
+
+.fighter-info h4, .pilots-info h4 {
+    color: #555;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+

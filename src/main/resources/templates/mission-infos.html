@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout (~{::title}, ~{::content})}">
+
+<head>
+  <title>Détails de la mission</title>
+</head>
+
+<body>
+
+  <th:block th:fragment="content">
+    <h1>Détails de la mission</h1>
+
+    <div class="add-button">
+      <a th:href="@{/mission}">← Retour à la liste des missions</a>
+    </div>
+
+    <!-- Informations générales de la mission -->
+    <div class="mission-details">
+      <h2>Informations générales</h2>
+      <table class="details-table">
+        <tr>
+          <th>Nom de la mission :</th>
+          <td th:text="${mission.name != null ? mission.name : 'Non défini'}"></td>
+        </tr>
+        <tr>
+          <th>Description :</th>
+          <td th:text="${mission.description != null ? mission.description : 'Non définie'}"></td>
+        </tr>
+        <tr>
+          <th>Statut :</th>
+          <td th:text="${mission.status != null ? mission.status : 'Inconnu'}"></td>
+        </tr>
+        <tr th:if="${mission.status.name() == 'DONE'}">
+          <th>Taux de succès :</th>
+          <td th:text="${mission.successRate}+'%'"></td>
+        </tr>
+        <tr th:if="${mission.status.name() == 'DONE'}">
+          <th>Temps de vol total :</th>
+          <td th:text="${mission.flightTime}+' heures'"></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Liste des équipages -->
+    <div class="crews-details">
+      <h2>Équipages assignés</h2>
+
+      <div th:if="${mission.flyingCrewList == null || #lists.isEmpty(mission.flyingCrewList)}">
+        <p>Aucun équipage assigné à cette mission.</p>
+      </div>
+
+      <div th:if="${mission.flyingCrewList != null && !#lists.isEmpty(mission.flyingCrewList)}">
+        <div th:each="crew : ${mission.flyingCrewList}" class="crew-card">
+          <h3 th:text="'Équipage : ' + ${crew.crewName}"></h3>
+
+          <!-- Informations du Fighter -->
+          <div class="fighter-info">
+            <h4>Vaisseau</h4>
+            <table class="details-table">
+              <tr>
+                <th>Nom :</th>
+                <td th:text="${crew.fighter.name}"></td>
+              </tr>
+              <tr>
+                <th>Type :</th>
+                <td th:text="${crew.fighter.type.name}"></td>
+              </tr>
+              <tr th:if="${mission.status.name() == 'DONE'}">
+                <th>Statut après mission :</th>
+                <td th:text="${crew.fighterStatusAfterMission != null ? crew.fighterStatusAfterMission : 'Non défini'}"></td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Pilotes assignés -->
+          <div class="pilots-info">
+            <h4>Pilotes</h4>
+
+            <div th:if="${crew.assignedPilotList == null || #lists.isEmpty(crew.assignedPilotList)}">
+              <p>Aucun pilote assigné à cet équipage.</p>
+            </div>
+
+            <div th:if="${crew.assignedPilotList != null && !#lists.isEmpty(crew.assignedPilotList)}">
+              <table class="pilots-table">
+                <thead>
+                  <tr>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Race</th>
+                    <th th:if="${mission.status.name() == 'DONE'}">Statut après mission</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="assignedPilot : ${crew.assignedPilotList}">
+                    <td th:text="${assignedPilot.pilot.lastName}"></td>
+                    <td th:text="${assignedPilot.pilot.firstName}"></td>
+                    <td th:text="${assignedPilot.pilot.race.name}"></td>
+                    <td th:if="${mission.status.name() == 'DONE'}"
+                        th:text="${assignedPilot.pilotStatusAfterMission != null ? assignedPilot.pilotStatusAfterMission : 'Non défini'}">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </th:block>
+
+</body>
+
+</html>

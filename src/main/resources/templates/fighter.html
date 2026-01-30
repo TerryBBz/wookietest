@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout (~{::title}, ~{::content})}">
+
+<head>
+    <title>Liste des chasseurs</title>
+</head>
+
+<body>
+
+    <th:block th:fragment="content">
+
+        <h1>Liste des chasseurs</h1>
+
+        <div class="add-button">
+            <a th:href="@{/fighter/create}">Ajouter un chasseur</a>
+        </div>
+
+
+        <!-- Filtres par statut -->
+        <div class="filter-container">
+            <label class="filter-label">Filtrer par statut :</label>
+
+            <form method="get" th:action="@{/fighter}" th:object="${filter}">
+
+                <label>
+                    <input type="radio" name="status" value="" th:checked="${filter.status == null}" onchange="this.form.submit()">
+                    Tous les chasseurs
+                </label>
+
+                <label>
+                    <input type="radio" th:field="*{status}" value="OPERATIONAL" onchange="this.form.submit()">
+                    Opérationnels
+                </label>
+
+                <label>
+                    <input type="radio" th:field="*{status}" value="MAINTENANCE" onchange="this.form.submit()">
+                    En maintenance
+                </label>
+
+                <label>
+                    <input type="radio" th:field="*{status}" value="MAINTENANCE_BUT_OPERATIONAL" onchange="this.form.submit()">
+                    En maintenance mais opérationnels
+                </label>
+
+                <label>
+                    <input type="radio" th:field="*{status}" value="ASSIGNED" onchange="this.form.submit()">
+                    Assignés
+                </label>
+
+                <label>
+                    <input type="radio" th:field="*{status}" value="IN_MISSION" onchange="this.form.submit()">
+                    En mission
+                </label>
+
+                <label>
+                    <input type="radio" th:field="*{status}" value="DESTROYED" onchange="this.form.submit()">
+                    Détruits
+                </label>
+            </form>
+        </div>
+
+        <!-- Tableau des pilotes -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Type de chasseur</th>
+                    <th>Nombre de membres à bord</th>
+                    <th>Statut du chasseur</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="fighter : ${fighterPage.content}">
+                    <td th:text="${fighter.name}"></td>
+                    <td th:text="${fighter.type.name != null ? fighter.type.name : 'Non répertorié'}"></td>
+                    <td th:text="${fighter.type.nbPilot != null ? fighter.type.nbPilot : 'Inconnu'}"></td>
+                    <td th:text="${fighter.fighterStatus != null ? fighter.fighterStatus : 'Inconnu'}"></td>
+                    <td>
+                        <a th:href="@{/fighter/view/{id}(id=${fighter.id})}">Voir</a> |
+                        <a th:href="@{/fighter/delete/{id}(id=${fighter.id})}">Supprimer</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div
+            class="pagination"
+            th:if="${fighterPage.totalPages > 1}"
+        >
+            <span th:if="${fighterPage.hasPrevious()}">
+                <a th:href="@{/fighter(page=${fighterPage.number - 1},
+                                    size=${fighterPage.size},
+                                    status=${filter.status?.name()})}">
+                    « Précédent
+                </a>
+            </span>
+
+            <span th:each="i : ${#numbers.sequence(0, fighterPage.totalPages - 1)}">
+                <a
+                    th:if="${i != fighterPage.number}"
+                    th:href="@{/fighter(page=${i},
+                                    size=${fighterPage.size},
+                                    status=${filter.status?.name()})}"
+                    th:text="${i + 1}"
+                >
+                </a>
+                <strong
+                    th:if="${i == fighterPage.number}"
+                    th:text="${i + 1}"
+                ></strong>
+            </span>
+
+            <span th:if="${fighterPage.hasNext()}">
+                <a th:href="@{/fighter(page=${fighterPage.number + 1},
+                                    size=${fighterPage.size},
+                                    status=${filter.status?.name()})}">
+                    Suivant »
+                </a>
+            </span>
+        </div>
+
+
+    </th:block>
+
+</body>
+
+</html>

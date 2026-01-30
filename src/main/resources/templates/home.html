@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout (~{::title}, ~{::content})}">
+<head>
+    <title>Accueil</title>
+</head>
+<body>
+
+<th:block th:fragment="content">
+    <h2>Bienvenue dans une galaxie très lointaine… </h2>
+
+    <div>
+        <p>Mais ne vous réjouissez pas trop vite ! </p>
+        <p>Car en effet, actuellement, la guerre fait rage…</p>
+        <p>Nous avons besoin de renforts, c'est là que vous intervenez.</p>
+        <p>Recrutez un maximum de pilotes, ou l'avenir de Wookies Airlines sera hélas mis en péril...</p>
+        <p>Que la force soit avec nous !</p>
+    </div>
+    <div>
+        <img src="./images/giantChewbacca.png" alt="chewbacca">
+    </div>
+</th:block>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout :: layout (~{::title}, ~{::content})}"
+>
+
+<head>
+    <title>Créer / Modifier un équipage</title>
+</head>
+
+<body>
+
+    <th:block th:fragment="content">
+
+        <h1 th:text="${flyingCrew.id != null ? 'Modifier un équipage' : 'Créer un équipage'}"></h1>
+
+        <form
+            th:action="@{/flyingcrew/save}"
+            method="post"
+        >
+
+            <div>
+                <label>Nom de l'équipage :</label>
+                <input
+                    type="text"
+                    name="crewName"
+                    required
+                />
+            </div>
+            <br>
+
+            <div>
+                <label>Vaisseau :</label>
+                <select
+                    name="fighterId"
+                    required
+                >
+                    <option
+                        value=""
+                        disabled
+                        selected
+                    >-- Choisir un vaisseau --</option>
+                    <option
+                        th:each="f : ${availableFighters}"
+                        th:value="${f.id}"
+                        th:text="${f.name + ' (' + f.type.name + ') - ' + f.fighterStatus.status}"
+                        th:if="${f.fighterStatus.name() == 'OPERATIONAL' or f.fighterStatus.name() == 'MAINTENANCE_BUT_OPERATIONAL'}"
+                    >
+                    </option>
+                </select>
+            </div>
+            <br>
+
+            <div>
+                <label>Pilote 1 :</label>
+                <select
+                    name="pilot1Id"
+                    required
+                >
+                    <option
+                        value=""
+                        disabled
+                        selected
+                    >-- Choisir le pilote 1 --</option>
+                    <option
+                        th:each="p : ${availablePilots}"
+                        th:value="${p.id}"
+                        th:text="${p.pilot.firstName + ' ' + p.pilot.lastName}"
+                    >
+                    </option>
+                </select>
+            </div>
+            <br>
+
+            <div>
+                <label>Pilote 2 :</label>
+                <select name="pilot2Id">
+                    <option
+                        value=""
+                        disabled
+                        selected
+                    >-- Choisir le pilote 2 --</option>
+                    <option
+                        th:each="p : ${availablePilots}"
+                        th:value="${p.id}"
+                        th:text="${p.pilot.firstName + ' ' + p.pilot.lastName}"
+                    >
+                    </option>
+                </select>
+            </div>
+            <br>
+
+            <div>
+                <button type="submit">Créer l'équipage</button>
+                <a th:href="@{/flyingcrew}">Annuler</a>
+            </div>
+
+        </form>
+
+    </th:block>
+
+</body>
+
+</html>

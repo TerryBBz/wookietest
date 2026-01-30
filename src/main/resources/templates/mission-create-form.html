@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout (~{::title}, ~{::content})}">
+
+<head>
+    <title>Ajouter une Mission</title>
+</head>
+
+<body>
+
+    <th:block th:fragment="content">
+        <h2>Ajouter une Mission</h2>
+
+        <form th:action="@{/mission/add}" th:object="${mission}" method="post">
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="form-group">
+                <label for="name">Nom :</label>
+                <input type="text" th:field="*{name}" id="name" required />
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description :</label>
+                <input type="text" th:field="*{description}" id="description" rows="4" cols="50" required />
+            </div>
+
+            <div class="form-group">
+                <label for="type">Type :</label>
+
+                <select th:field="*{type.id}" id="type">
+                    <option value="">-- Sélectionner --</option>
+                    <option th:each="missionType : ${types}"
+                        th:value="${missionType.id}"
+                        th:text="${missionType.name}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="flyingCrewList1">Equipage 1 :</label>
+                <select name="flyingCrewIds" id="flyingCrewList1">
+                    <option value="">-- Pas d'équipage --</option>
+                    <option th:each="crew : ${flyingCrews}"
+                        th:value="${crew.id}"
+                        th:text="${crew.crewName}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="flyingCrewList2">Equipage 2 :</label>
+                <select name="flyingCrewIds" id="flyingCrewList2">
+                    <option value="">-- Pas d'équipage --</option>
+                    <option th:each="crew : ${flyingCrews}"
+                        th:value="${crew.id}"
+                        th:text="${crew.crewName}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="flyingCrewList3">Equipage 3 :</label>
+                <select name="flyingCrewIds" id="flyingCrewList3">
+                    <option value="">-- Pas d'équipage --</option>
+                    <option th:each="crew : ${flyingCrews}"
+                        th:value="${crew.id}"
+                        th:text="${crew.crewName}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="flyingCrewList4">Equipage 4 :</label>
+                <select name="flyingCrewIds" id="flyingCrewList4">
+                    <option value="">-- Pas d'équipage --</option>
+                    <option th:each="crew : ${flyingCrews}"
+                        th:value="${crew.id}"
+                        th:text="${crew.crewName}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="flyingCrewList5">Equipage 5 :</label>
+                <select name="flyingCrewIds" id="flyingCrewList5">
+                    <option value="">-- Pas d'équipage --</option>
+                    <option th:each="crew : ${flyingCrews}"
+                        th:value="${crew.id}"
+                        th:text="${crew.crewName}"></option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit">Créer la Mission</button>
+                <a th:href="@{/mission}">Annuler</a>
+            </div>
+        </form>
+    </th:block>
+
+</body>
+
+</html>

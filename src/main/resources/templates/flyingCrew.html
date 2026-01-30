@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout :: layout (~{::title}, ~{::content})}"
+>
+
+<head>
+    <title>Liste des équipages</title>
+</head>
+
+<body>
+
+    <th:block th:fragment="content">
+        <h1>Liste des équipages</h1>
+
+        <div class="add-button">
+            <a th:href="@{/flyingcrew/add}">Ajouter un équipage</a>
+        </div>
+
+        <!-- Messages de succès/erreur -->
+        <div th:if="${success}" class="alert alert-success">
+            <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-error">
+            <span th:text="${error}"></span>
+        </div>
+
+        <div class="filter-container">
+            <label class="filter-label">Filtrer par statut :</label>
+
+            <form
+                method="get"
+                th:action="@{/flyingcrew}"
+                th:object="${filter}"
+            >
+                <label>
+                    <input
+                        type="radio"
+                        name="status"
+                        value=""
+                        th:checked="${filter.status == null}"
+                        onchange="this.form.submit()"
+                    >
+                    Tous les équipages
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        th:field="*{status}"
+                        value="AVAILABLE"
+                        onchange="this.form.submit()"
+                    >
+                    Disponibles
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        th:field="*{status}"
+                        value="ASSIGNED"
+                        onchange="this.form.submit()"
+                    >
+                    Assignés
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        th:field="*{status}"
+                        value="IN_MISSION"
+                        onchange="this.form.submit()"
+                    >
+                    En mission
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        th:field="*{status}"
+                        value="DISSOLVED"
+                        onchange="this.form.submit()"
+                    >
+                    Dissous
+                </label>
+            </form>
+
+
+        </div>
+
+        <!-- Tableau des équipages -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom de l'équipage</th>
+                    <th>Nom du vaisseau</th>
+                    <th>Type du vaisseau</th>
+                    <th>Pilote 1</th>
+                    <th>Pilote 2</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="flyingCrew : ${flyingCrewsPage.content}">
+                    <td th:text="${flyingCrew.crewName}"></td>
+                    <td th:text="${flyingCrew.fighter != null ? flyingCrew.fighter.name : 'Inconnu'}"></td>
+                    <td th:text="${flyingCrew.fighter != null && flyingCrew.fighter.type != null ? flyingCrew.fighter.type.name : 'Inconnu'}"></td>
+                    <td>
+                        <span th:if="${flyingCrew.assignedPilotList.size() >= 1}">
+                            <span th:each="pilot, iterStat : ${flyingCrew.assignedPilotList}" th:if="${iterStat.index == 0}">
+                                <span th:text="${pilot.pilot.firstName + ' ' + pilot.pilot.lastName}"></span>
+                            </span>
+                        </span>
+                        <span th:if="${flyingCrew.assignedPilotList.size() < 1}">-</span>
+                    </td>
+                    <td>
+                        <span th:if="${flyingCrew.assignedPilotList.size() >= 2}">
+                            <span th:each="pilot, iterStat : ${flyingCrew.assignedPilotList}" th:if="${iterStat.index == 1}">
+                                <span th:text="${pilot.pilot.firstName + ' ' + pilot.pilot.lastName}"></span>
+                            </span>
+                        </span>
+                        <span th:if="${flyingCrew.assignedPilotList.size() < 2}">-</span>
+                    </td>
+                    <td th:text="${flyingCrew.crewStatus != null ? flyingCrew.crewStatus.status : 'Inconnu'}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div
+            class="pagination"
+            th:if="${flyingCrewsPage.totalPages > 1}"
+        >
+            <span th:if="${flyingCrewsPage.hasPrevious()}">
+                <a th:href="@{/flyingcrew(page=${flyingCrewsPage.number - 1},
+                                    size=${flyingCrewsPage.size},
+                                    status=${filter.status?.name()})}">
+                    « Précédent
+                </a>
+            </span>
+
+            <span th:each="i : ${#numbers.sequence(0, flyingCrewsPage.totalPages - 1)}">
+                <a
+                    th:if="${i != flyingCrewsPage.number}"
+                    th:href="@{/flyingcrew(page=${i},
+                                    size=${flyingCrewsPage.size},
+                                    status=${filter.status?.name()})}"
+                    th:text="${i + 1}"
+                >
+                </a>
+                <strong
+                    th:if="${i == flyingCrewsPage.number}"
+                    th:text="${i + 1}"
+                ></strong>
+            </span>
+
+            <span th:if="${flyingCrewsPage.hasNext()}">
+                <a th:href="@{/flyingcrew(page=${flyingCrewsPage.number + 1},
+                                    size=${flyingCrewsPage.size},
+                                    status=${filter.status?.name()})}">
+                    Suivant »
+                </a>
+            </span>
+        </div>
+    </th:block>
+
+</body>
+
+</html>

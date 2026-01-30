@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout :: layout (~{::title}, ~{::content})}"
+>
+
+<head>
+    <title>Liste des pilotes assignés</title>
+</head>
+
+<body>
+
+    <th:block th:fragment="content">
+        <h1>Liste des pilotes assignés</h1>
+
+        <div class="add-button">
+            <a th:href="@{/assignedpilot/create}">Assigner un pilote</a>
+        </div>
+        <div class="filter-container">
+            <label class="filter-label">Filtrer par statut :</label>
+
+            <form
+                method="get"
+                th:action="@{/assignedpilot}"
+                th:object="${assignedPilotFilter}"
+            >
+                <label>
+                    <input
+                        type="radio"
+                        name="status"
+                        value=""
+                        th:checked="${assignedPilotFilter.status == null}"
+                        onchange="this.form.submit()"
+                    >
+                    Tous les pilotes assignés
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        th:field="*{status}"
+                        value="WAITING"
+                        onchange="this.form.submit()"
+                    >
+                    En attente
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        th:field="*{status}"
+                        value="ASSIGNED"
+                        onchange="this.form.submit()"
+                    >
+                    En mission
+                </label>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Pilote</th>
+                        <th>Statut du pilote</th>
+                        <th>Statut de l'assignation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="assignedPilot : ${assignedPilots}">
+                        <td th:text="${assignedPilot.id}"></td>
+                        <td th:text="${assignedPilot.pilot.firstName + ' ' + assignedPilot.pilot.lastName}"></td>
+                        <td th:text="${assignedPilot.pilot.pilotStatus.status}"></td>
+                        <td>
+                            <span
+                                th:text="${assignedPilot.status.status}"
+                                th:class="${assignedPilot.status.name() == 'WAITING' ? 'status-waiting' : 'status-assigned'}"
+                            >
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </th:block>
+
+</body>
+
+</html>

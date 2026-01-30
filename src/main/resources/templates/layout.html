@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html
+    lang="fr"
+    xmlns:th="http://www.thymeleaf.org"
+    th:fragment="layout (title, content)"
+>
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title th:replace="${title}">Wookiee Airlines</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+
+<body>
+    <header>
+        <h1>🚀 Wookiee Airlines</h1>
+        <nav>
+            <span th:each="item, stat : ${navItems}">
+                <span th:if="${item.url == activeUrl}" th:text="${item.label}" style="font-weight: bold;"></span>
+                <a th:if="${item.url != activeUrl}" th:href="${item.url}" th:text="${item.label}"></a>
+                <span th:if="${!stat.last}"> | </span>
+            </span>
+        </nav>
+        <hr />
+    </header>
+
+    <div class="container">
+        <div th:replace="${content}">
+            <!-- Le contenu de la page sera inséré ici -->
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Wookiee Airlines - Que la Force soit avec vous rebelles</p>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout (~{::title}, ~{::content})}">
+
+<head>
+    <title>Modifier un pilote</title>
+</head>
+
+<body>
+
+<th:block th:fragment="content">
+    <h1>Modifier un pilote</h1>
+
+    <form
+        th:action="@{/pilot/update}"
+        th:object="${pilot}"
+        method="post"
+    >
+        <input
+            type="hidden"
+            th:field="*{idPilot}"
+        />
+
+        <div class="form-group">
+            <label for="firstName">Prénom:</label>
+            <input
+                type="text"
+                id="firstName"
+                th:field="*{firstName}"
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="lastName">Nom:</label>
+            <input
+                type="text"
+                id="lastName"
+                th:field="*{lastName}"
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="subscriptionAge">Âge d'inscription:</label>
+            <input
+                type="number"
+                id="subscriptionAge"
+                th:field="*{subscriptionAge}"
+                min="1"
+                max="200"
+            />
+        </div>
+
+
+        <div class="form-group">
+            <label for="totalFlightTime">Temps de vol total (heures):</label>
+            <input
+                type="number"
+                id="totalFlightTime"
+                th:field="*{totalFlightTime}"
+                min="0"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="race">Race:</label>
+            <select id="race" th:field="*{race}">
+                <option value="">-- Choisir une race --</option>
+                <option th:each="raceType : ${raceTypes}"
+                        th:value="${raceType.idRaceType}"
+                        th:text="${raceType.name}">
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="totalMissions">Total missions:</label>
+            <span id="totalMissions" class="form-display" th:text="${pilot.totalMissions}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="totalCombatMissions">Missions de combat:</label>
+            <span id="totalCombatMissions" class="form-display" th:text="${pilot.totalCombatMissions}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="grade">Grade:</label>
+            <span id="grade" class="form-display" th:text="${pilotGrade}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="pilotStatus">Statut:</label>
+            <select id="pilotStatus" th:field="*{pilotStatus}">
+                <option value="">-- Choisir un statut --</option>
+                <option th:each="status : ${T(com.ldnr.wookieAirlines.models.enums.PilotStatusEnum).values()}"
+                        th:value="${status.name()}"
+                        th:text="${status.status}">
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="missions">Missions effectuées:</label>
+            <div id="missions" class="form-display">
+                <div th:if="${pilotMissions.isEmpty()}">
+                    <em>Aucune mission effectuée</em>
+                </div>
+                <ul th:unless="${pilotMissions.isEmpty()}">
+                    <li th:each="mission : ${pilotMissions}">
+                        <strong th:text="${mission.name}"></strong> -
+                        <span th:text="${mission.description}"></span>
+                        <em th:text="' (' + ${mission.status} + ')'"></em>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit">Sauvegarder</button>
+            <a th:href="@{/pilot}">Retour à la liste</a>
+        </div>
+    </form>
+
+</th:block>
+
+</body>
+
+</html>

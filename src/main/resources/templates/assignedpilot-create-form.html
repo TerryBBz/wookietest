@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout (~{::title}, ~{::content})}">
+
+<head>
+    <title>Assigner un pilote</title>
+</head>
+
+<body>
+
+<th:block th:fragment="content">
+    <h1>Assigner un pilote</h1>
+
+    <form
+        th:action="@{/assignedpilot/create}"
+        th:object="${assignedPilot}"
+        method="post"
+    >
+        <!-- Le nom sera automatiquement celui du pilote sélectionné -->
+
+        <div class="form-group">
+            <label for="pilot">Pilote disponible:</label>
+            <select
+                id="pilot"
+                th:field="*{pilot.idPilot}"
+                required
+                class="form-control"
+            >
+                <option value="">Sélectionnez un pilote disponible</option>
+                <option
+                    th:each="pilot : ${availablePilots}"
+                    th:value="${pilot.idPilot}"
+                    th:text="${pilot.firstName + ' ' + pilot.lastName + ' (' + pilot.pilotStatus.status + ')'}"
+                >
+                </option>
+            </select>
+            <small class="form-text text-muted">
+                Seuls les pilotes avec le statut "Disponible" ou "Blessé mais disponible" peuvent être assignés.
+            </small>
+        </div>
+
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Assigner le pilote</button>
+            <a th:href="@{/assignedpilot}" class="btn btn-secondary">Annuler</a>
+        </div>
+    </form>
+
+    <style>
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0,123,255,.25);
+        }
+
+        .form-text {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .form-control-plaintext {
+            padding: 10px 0;
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+
+        .form-actions {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+    </style>
+
+</th:block>
+
+</body>
+</html>

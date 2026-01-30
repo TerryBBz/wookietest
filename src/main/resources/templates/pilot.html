@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout :: layout (~{::title}, ~{::content})}"
+>
+
+<head>
+    <title>Liste des pilotes</title>
+</head>
+
+<body>
+
+    <th:block th:fragment="content">
+        <h1>Liste des pilotes</h1>
+
+        <div class="add-button">
+            <a th:href="@{/pilot/add}">Ajouter un pilote</a>
+        </div>
+
+        <div class="filter-container">
+            <label class="filter-label">Filtrer par statut :</label>
+
+            <form
+                method="get"
+                th:action="@{/pilot}"
+                th:object="${pilotFilter}"
+            >
+
+                <input
+                    type="hidden"
+                    name="page"
+                    value="0"
+                >
+                <input
+                    type="hidden"
+                    name="size"
+                    th:value="${page.size}"
+                >
+
+                <label>
+                    <input
+                        type="radio"
+                        name="status"
+                        value=""
+                        th:checked="${pilotFilter.status == null}"
+                        onchange="this.form.submit()"
+                    >
+                    Tous les pilotes
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        th:field="*{status}"
+                        value="AVAILABLE"
+                        onchange="this.form.submit()"
+                    >
+                    Disponibles
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        th:field="*{status}"
+                        value="WOUNDED"
+                        onchange="this.form.submit()"
+                    >
+                    Blessés
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        th:field="*{status}"
+                        value="WOUNDED_BUT_AVAILABLE"
+                        onchange="this.form.submit()"
+                    >
+                    Blessés mais disponibles
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        th:field="*{status}"
+                        value="ASSIGNED"
+                        onchange="this.form.submit()"
+                    >
+                    En mission
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        th:field="*{status}"
+                        value="DEAD"
+                        onchange="this.form.submit()"
+                    >
+                    Morts
+                </label>
+            </form>
+
+            <!-- Champ de recherche -->
+            <form
+                method="get"
+                th:action="@{/pilot}"
+                th:object="${pilotFilter}"
+                style="margin-top: 10px;"
+            >
+                <input
+                    type="hidden"
+                    name="page"
+                    value="0"
+                >
+                <input
+                    type="hidden"
+                    name="size"
+                    th:value="${page.size}"
+                >
+                <!-- Préserver le statut sélectionné -->
+                <input
+                    type="hidden"
+                    name="status"
+                    th:value="${pilotFilter.status?.name()}"
+                >
+
+                <label for="search">Rechercher par nom :</label>
+                <input
+                    type="text"
+                    id="search"
+                    name="search"
+                    th:value="${pilotFilter.search}"
+                    placeholder="Entrez un nom..."
+                />
+                <button type="submit">Trier</button>
+            </form>
+
+        </div>
+
+        <!-- Tableau des pilotes -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Race</th>
+                    <th>Grade</th>
+                    <th>Statut du pilote</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="pilot : ${pilots}">
+                    <td th:text="${pilot.firstName}"></td>
+                    <td th:text="${pilot.lastName}"></td>
+                    <td th:text="${pilot.race != null ? pilot.race.name : 'Inconnue'}"></td>
+                    <td th:text="${pilotGrades[pilot.idPilot]}"></td>
+                    <td th:text="${pilot.pilotStatus != null ? pilot.pilotStatus.status : 'Inconnu'}"></td>
+                    <td>
+                        <a th:href="@{/pilot/view/{id}(id=${pilot.idPilot})}">Voir</a> |
+                        <a th:href="@{/pilot/delete/{id}(id=${pilot.idPilot})}">Supprimer</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div
+            class="pagination"
+            th:if="${page.totalPages > 1}"
+        >
+            <span th:if="${page.hasPrevious()}">
+                <a th:href="@{/pilot(page=${page.number - 1},
+                                    size=${page.size},
+                                    status=${pilotFilter.status?.name()},
+                                    search=${pilotFilter.search})}">
+                    « Précédent
+                </a>
+            </span>
+
+            <span th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}">
+                <a
+                    th:if="${i != page.number}"
+                    th:href="@{/pilot(page=${i},
+                                    size=${page.size},
+                                    status=${pilotFilter.status?.name()},
+                                    search=${pilotFilter.search})}"
+                    th:text="${i + 1}"
+                >
+                </a>
+                <strong
+                    th:if="${i == page.number}"
+                    th:text="${i + 1}"
+                ></strong>
+            </span>
+
+            <span th:if="${page.hasNext()}">
+                <a th:href="@{/pilot(page=${page.number + 1},
+                                    size=${page.size},
+                                    status=${pilotFilter.status?.name()},
+                                    search=${pilotFilter.search})}">
+                    Suivant »
+                </a>
+            </span>
+        </div>
+    </th:block>
+
+</body>
+
+</html>
