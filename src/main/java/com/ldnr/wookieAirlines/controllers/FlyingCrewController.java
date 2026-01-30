@@ -1,12 +1,17 @@
 package com.ldnr.wookieAirlines.controllers;
 
 import com.ldnr.wookieAirlines.models.FlyingCrew;
+import com.ldnr.wookieAirlines.models.Fighter;
+import com.ldnr.wookieAirlines.models.AssignedPilot;
 import com.ldnr.wookieAirlines.models.enums.AssignedPilotStatusEnum;
 import com.ldnr.wookieAirlines.models.enums.CrewStatusEnum;
 import com.ldnr.wookieAirlines.filters.CrewFilter;
 import com.ldnr.wookieAirlines.services.FighterService;
 import com.ldnr.wookieAirlines.services.FlyingCrewService;
 import com.ldnr.wookieAirlines.services.AssignedPilotService;
+
+import java.util.List;
+import java.util.ArrayList;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -51,15 +56,27 @@ public class FlyingCrewController {
 
     @GetMapping("/add")
     public String addFlyingCrew(Model model) {
-        model.addAttribute("flyingCrew", new FlyingCrew());
+        try {
+            model.addAttribute("flyingCrew", new FlyingCrew());
 
-        // Récupérer uniquement les pilots en attente
-        model.addAttribute("availablePilots", assignedPilotService.getByStatus(AssignedPilotStatusEnum.WAITING));
+            // Récupérer les pilotes en attente avec gestion d'erreur
+            List<AssignedPilot> availablePilots = assignedPilotService.getByStatus(AssignedPilotStatusEnum.WAITING);
+            model.addAttribute("availablePilots", availablePilots != null ? availablePilots : List.of());
 
-        // Récupérer uniquement les fighters opérationnels ou en maintenance mais opérationnels
-        model.addAttribute("availableFighters", fighterService.findAll());
+            // Récupérer les chasseurs avec gestion d'erreur
+            List<Fighter> availableFighters = new ArrayList<>();
+            Iterable<Fighter> fightersIterable = fighterService.findAll();
+            if (fightersIterable != null) {
+                fightersIterable.forEach(availableFighters::add);
+            }
+            model.addAttribute("availableFighters", availableFighters);
 
-        return "flyingcrew-create-form";
+            return "flyingcrew-create-form";
+        } catch (Exception e) {
+            // En cas d'erreur, rediriger vers la liste avec un message
+            model.addAttribute("errorMessage", "Erreur lors du chargement des données: " + e.getMessage());
+            return "redirect:/flyingcrew?error=loading";
+        }
     }
 
     @PostMapping("/save")
@@ -69,9 +86,21 @@ public class FlyingCrewController {
             @RequestParam Long pilot1Id,
             @RequestParam(required = false) Long pilot2Id) {
 
-        flyingCrewService.createCrewWithAssignments(crewName, fighterId, pilot1Id, pilot2Id);
+        try {
+            // Vérifications basiques
+            if (crewName == null || crewName.trim().isEmpty()) {
+                return "redirect:/flyingcrew/add?error=nom-vide";
+            }
 
-        return "redirect:/flyingcrew";
+            if (fighterId == null || pilot1Id == null) {
+                return "redirect:/flyingcrew/add?error=donnees-manquantes";
+            }
+
+            flyingCrewService.createCrewWithAssignments(crewName.trim(), fighterId, pilot1Id, pilot2Id);
+            return "redirect:/flyingcrew?success=creation";
+        } catch (Exception e) {
+            return "redirect:/flyingcrew/add?error=creation-echec";
+        }
     }
 
 }
